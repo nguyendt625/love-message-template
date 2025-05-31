@@ -10,6 +10,17 @@ const messageContainer = document.getElementById("message-container");
 const canvas = document.getElementById("heart-canvas");
 const ctx = canvas.getContext("2d");
 
+const audio = document.getElementById('bg-music');
+// Thử phát nhạc
+audio.play().catch(() => {
+// Nếu trình duyệt chặn autoplay, thì đợi người dùng click
+  const playOnClick = () => {
+    audio.play();
+    document.body.removeEventListener('click', playOnClick);
+  };
+  document.body.addEventListener('click', playOnClick);
+});
+
 function resizeCanvas() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
