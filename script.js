@@ -1,4 +1,3 @@
-// 📝 Cá nhân hoá danh sách thông điệp yêu thương ở đây
 const loveMessages = [
   "Anh yêu em 💖",
   "Mãi bên nhau nhé 🌹",
@@ -11,12 +10,19 @@ const messageContainer = document.getElementById("message-container");
 const canvas = document.getElementById("heart-canvas");
 const ctx = canvas.getContext("2d");
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
 
 let hearts = [];
+const maxHearts = 100;  // Giới hạn số trái tim để tránh lag trên mobile
 
 function createHeart() {
+  if (hearts.length >= maxHearts) return;  // không tạo thêm nếu đã đủ
+
   const heart = {
     x: Math.random() * canvas.width,
     y: 0,
@@ -38,16 +44,13 @@ function drawHearts() {
     ctx.fill();
     heart.y += heart.speed;
 
-    // remove if off screen
     if (heart.y > canvas.height) {
       hearts.splice(index, 1);
     }
   });
 }
 
-setInterval(() => {
-  createHeart();
-}, 100);
+setInterval(createHeart, 100);
 
 function animateHearts() {
   drawHearts();
@@ -62,7 +65,19 @@ function createFallingMessage() {
   msg.innerText = loveMessages[Math.floor(Math.random() * loveMessages.length)];
 
   msg.style.left = `${Math.random() * 90}%`;
+  
+  // Tăng giảm thời gian animation để đa dạng hơn
   msg.style.animationDuration = `${3 + Math.random() * 3}s`;
+
+  // Điều chỉnh font size theo kích thước màn hình
+  const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+  if (vw < 480) {
+    msg.style.fontSize = '16px';
+  } else if (vw < 768) {
+    msg.style.fontSize = '20px';
+  } else {
+    msg.style.fontSize = '24px';
+  }
 
   messageContainer.appendChild(msg);
 
